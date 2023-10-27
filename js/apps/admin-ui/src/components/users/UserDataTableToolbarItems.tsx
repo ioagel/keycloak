@@ -63,6 +63,8 @@ export function UserDataTableToolbarItems({
 
   const { hasAccess } = useAccess();
 
+  const isRealmManager = hasAccess("manage-realm");
+
   // Only needs query-users access to attempt add/delete of users.
   // This is because the user could have fine-grained access to users
   // of a group.  There is no way to know this without searching the
@@ -157,7 +159,7 @@ export function UserDataTableToolbarItems({
         variant={ButtonVariant.link}
         onClick={toggleDeleteDialog}
         data-testid="delete-user-btn"
-        isDisabled={hasSelectedRows}
+        isDisabled={hasSelectedRows || !isRealmManager}
       >
         {t("deleteUser")}
       </Button>
@@ -172,7 +174,7 @@ export function UserDataTableToolbarItems({
           <DropdownItem
             key="deleteUser"
             component="button"
-            isDisabled={hasSelectedRows}
+            isDisabled={hasSelectedRows || !isRealmManager}
             onClick={() => {
               toggleDeleteDialog();
               setKebabOpen(false);

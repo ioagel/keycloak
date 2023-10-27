@@ -68,6 +68,9 @@ export default function EditUser() {
   const [refreshCount, setRefreshCount] = useState(0);
   const refresh = () => setRefreshCount((count) => count + 1);
 
+  // Only Realm Manager can see and do some things
+  const isRealmManager = hasAccess("manage-realm");
+
   const toTab = (tab: UserTab) =>
     toUser({
       realm: realmName,
@@ -195,7 +198,7 @@ export default function EditUser() {
           </DropdownItem>,
           <DropdownItem
             key="delete"
-            isDisabled={!user.access?.manage}
+            isDisabled={!isRealmManager}
             onClick={() => toggleDeleteDialog()}
           >
             {t("common:delete")}
@@ -253,7 +256,7 @@ export default function EditUser() {
               </Tab>
               <Tab
                 data-testid="role-mapping-tab"
-                isHidden={!user.access?.mapRoles}
+                isHidden={!isRealmManager}
                 title={<TabTitleText>{t("roleMapping")}</TabTitleText>}
                 {...roleMappingTab}
               >
@@ -270,6 +273,7 @@ export default function EditUser() {
               )}
               <Tab
                 data-testid="user-consents-tab"
+                isHidden={!isRealmManager}
                 title={<TabTitleText>{t("consents")}</TabTitleText>}
                 {...consentsTab}
               >

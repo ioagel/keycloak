@@ -42,6 +42,7 @@ import { ListEmptyState } from "../list-empty-state/ListEmptyState";
 import { BruteUser, findUsers } from "../role-mapping/resource";
 import { KeycloakDataTable } from "../table-toolbar/KeycloakDataTable";
 import { UserDataTableToolbarItems } from "./UserDataTableToolbarItems";
+import { useAccess } from "../../context/access/Access";
 
 export type UserAttribute = {
   name: string;
@@ -65,6 +66,9 @@ export function UserDataTable() {
 
   const [key, setKey] = useState(0);
   const refresh = () => setKey(key + 1);
+
+  const { hasAccess } = useAccess();
+  const isRealmManager = hasAccess("manage-realm");
 
   useFetch(
     async () => {
@@ -353,7 +357,7 @@ export function UserDataTable() {
         subToolbar={subtoolbar()}
         actionResolver={(rowData: IRowData) => {
           const user: UserRepresentation = rowData.data;
-          if (!user.access?.manage) return [];
+          if (!isRealmManager) return [];
 
           return [
             {

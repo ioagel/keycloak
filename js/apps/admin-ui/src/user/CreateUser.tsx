@@ -47,6 +47,8 @@ export default function CreateUser() {
         throw new Error(t("common:notFound"));
       }
 
+      // fixes cancel bug
+      realm.id = realmName;
       setRealm(realm);
 
       const isUserProfileEnabled =
