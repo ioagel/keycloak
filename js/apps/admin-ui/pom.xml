@@ -11,7 +11,8 @@
         <relativePath>../../pom.xml</relativePath>
     </parent>
 
-    <artifactId>keycloak-admin-ui</artifactId>
+    <artifactId>mtds-keycloak-admin-ui</artifactId>
+    <version>1.0.0</version>
 
     <name>Keycloak Admin UI</name>
     <description>The user inferface to administrate the Keycloak server.</description>
@@ -28,7 +29,7 @@
                 <resources>
                     <resource>
                         <directory>dist</directory>
-                        <targetPath>theme/keycloak.v2/admin/resources</targetPath>
+                        <targetPath>theme/mtds.keycloak.v2/admin/resources</targetPath>
                         <includes>
                             <include>locales/en/**</include>
                         </includes>
@@ -47,7 +48,7 @@
                 <resources>
                     <resource>
                         <directory>dist</directory>
-                        <targetPath>theme/keycloak.v2/admin/resources</targetPath>
+                        <targetPath>theme/mtds.keycloak.v2/admin/resources</targetPath>
                         <includes>
                             <include>locales/**</include>
                         </includes>
@@ -64,7 +65,7 @@
             </resource>
             <resource>
                 <directory>dist</directory>
-                <targetPath>theme/keycloak.v2/admin/resources</targetPath>
+                <targetPath>theme/mtds.keycloak.v2/admin/resources</targetPath>
                 <excludes>
                     <exclude>index.html</exclude>
                     <exclude>locales/**</exclude>
@@ -104,7 +105,7 @@
                 </executions>
                 <configuration>
                     <file>dist/index.html</file>
-                    <outputFile>target/classes/theme/keycloak.v2/admin/index.ftl</outputFile>
+                    <outputFile>target/classes/theme/mtds.keycloak.v2/admin/index.ftl</outputFile>
                     <regex>false</regex>
                     <replacements>
                         <replacement>

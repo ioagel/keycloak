@@ -76,6 +76,8 @@ export default function GroupsSection() {
     currentGroup()?.access?.viewMembers ||
     currentGroup()?.access?.manageMembers;
 
+  const isRealmManager = hasAccess("manage-realm");
+
   useFetch(
     async () => {
       const ids = getId(location.pathname);
@@ -158,7 +160,7 @@ export default function GroupsSection() {
                 helpUrl={!id ? helpUrls.groupsUrl : ""}
                 divider={!id}
                 dropdownItems={
-                  id && canManageGroup
+                  id && canManageGroup && isRealmManager
                     ? [
                         <DropdownItem
                           data-testid="renameGroupAction"
@@ -193,8 +195,9 @@ export default function GroupsSection() {
                   unmountOnExit
                 >
                   <Tab
+                    isHidden={!isRealmManager}
                     data-testid="groups"
-                    eventKey={0}
+                    eventKey={1}
                     title={<TabTitleText>{t("childGroups")}</TabTitleText>}
                   >
                     <GroupTable
@@ -205,13 +208,14 @@ export default function GroupsSection() {
                   {canViewMembers && (
                     <Tab
                       data-testid="members"
-                      eventKey={1}
+                      eventKey={0}
                       title={<TabTitleText>{t("members")}</TabTitleText>}
                     >
                       <Members />
                     </Tab>
                   )}
                   <Tab
+                    isHidden={!isRealmManager}
                     data-testid="attributes"
                     eventKey={2}
                     title={
@@ -220,7 +224,7 @@ export default function GroupsSection() {
                   >
                     <GroupAttributes />
                   </Tab>
-                  {canManageRoles && (
+                  {isRealmManager && canManageRoles && (
                     <Tab
                       eventKey={3}
                       data-testid="role-mapping-tab"

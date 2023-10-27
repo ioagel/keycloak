@@ -22,5 +22,6 @@
   "memory": "Memory",
   "totalMemory": "Total memory",
   "freeMemory": "Free memory",
-  "usedMemory": "Used memory"
+  "usedMemory": "Used memory",
+  "tzaneio.realm.name": "Tzaneio Cardiology"
 }

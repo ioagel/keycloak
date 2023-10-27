@@ -61,7 +61,9 @@ const EmptyDashboard = () => {
           {t("welcome")}
         </Title>
         <Title headingLevel="h1" size="4xl">
-          {realm}
+          {t("tzaneio.realm.name") !== "tzaneio.realm.name"
+            ? t("tzaneio.realm.name")
+            : realm}
         </Title>
         <EmptyStateBody>{t("introduction")}</EmptyStateBody>
       </EmptyState>

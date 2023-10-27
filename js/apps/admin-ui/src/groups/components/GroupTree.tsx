@@ -157,7 +157,7 @@ export const GroupTree = ({
         group.subGroups && group.subGroups.length > 0
           ? group.subGroups.map((g) => mapGroup(g, refresh))
           : undefined,
-      action: (hasAccess("manage-users") || group.access?.manage) && (
+      action: hasAccess("manage-realm") && (
         <GroupTreeContextMenu group={group} refresh={refresh} />
       ),
       defaultExpanded: subGroups.map((g) => g.id).includes(group.id),

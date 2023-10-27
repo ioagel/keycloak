@@ -72,6 +72,8 @@ export const Members = () => {
   const [selectedRows, setSelectedRows] = useState<UserRepresentation[]>([]);
   const { hasAccess } = useAccess();
 
+  const isRealmManager = hasAccess("manage-realm");
+
   useFetch(
     () => adminClient.groups.findOne({ id: group()!.id! }),
     setCurrentGroup,
@@ -157,15 +159,17 @@ export const Members = () => {
                   {t("addMember")}
                 </Button>
               </ToolbarItem>
-              <ToolbarItem>
-                <Checkbox
-                  data-testid="includeSubGroupsCheck"
-                  label={t("includeSubGroups")}
-                  id="kc-include-sub-groups"
-                  isChecked={includeSubGroup}
-                  onChange={() => setIncludeSubGroup(!includeSubGroup)}
-                />
-              </ToolbarItem>
+              {isRealmManager && (
+                <ToolbarItem>
+                  <Checkbox
+                    data-testid="includeSubGroupsCheck"
+                    label={t("includeSubGroups")}
+                    id="kc-include-sub-groups"
+                    isChecked={includeSubGroup}
+                    onChange={() => setIncludeSubGroup(!includeSubGroup)}
+                  />
+                </ToolbarItem>
+              )}
               <ToolbarItem>
                 <Dropdown
                   toggle={
@@ -268,12 +272,16 @@ export const Members = () => {
             instructions={isManager ? t("users:emptyInstructions") : undefined}
             primaryActionText={isManager ? t("addMember") : undefined}
             onPrimaryAction={() => setAddMembers(true)}
-            secondaryActions={[
-              {
-                text: t("includeSubGroups"),
-                onClick: () => setIncludeSubGroup(true),
-              },
-            ]}
+            secondaryActions={
+              isRealmManager
+                ? [
+                    {
+                      text: t("includeSubGroups"),
+                      onClick: () => setIncludeSubGroup(true),
+                    },
+                  ]
+                : []
+            }
           />
         }
       />

@@ -46,6 +46,8 @@ export const GroupTable = ({
   const { hasAccess } = useAccess();
   const isManager = hasAccess("manage-users") || currentGroup()?.access?.manage;
 
+  const isRealmManager = hasAccess("manage-realm");
+
   const loader = async (first?: number, max?: number) => {
     const params: Record<string, string> = {
       search: search || "",
@@ -139,15 +141,17 @@ export const GroupTable = ({
                 }}
               />
             </ToolbarItem>
-            <GroupToolbar
-              toggleCreate={toggleCreateOpen}
-              toggleDelete={toggleShowDelete}
-              kebabDisabled={selectedRows!.length === 0}
-            />
+            {isRealmManager && (
+              <GroupToolbar
+                toggleCreate={toggleCreateOpen}
+                toggleDelete={toggleShowDelete}
+                kebabDisabled={selectedRows!.length === 0}
+              />
+            )}
           </>
         }
         actions={
-          !isManager
+          !isManager || !isRealmManager
             ? []
             : [
                 {
