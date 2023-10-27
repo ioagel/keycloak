@@ -188,22 +188,26 @@ export default function EditUser() {
         titleKey={user.username!}
         className="kc-username-view-header"
         divider={false}
-        dropdownItems={[
-          <DropdownItem
-            key="impersonate"
-            isDisabled={!user.access?.impersonate}
-            onClick={() => toggleImpersonateDialog()}
-          >
-            {t("impersonate")}
-          </DropdownItem>,
-          <DropdownItem
-            key="delete"
-            isDisabled={!isRealmManager}
-            onClick={() => toggleDeleteDialog()}
-          >
-            {t("common:delete")}
-          </DropdownItem>,
-        ]}
+        dropdownItems={
+          isRealmManager
+            ? [
+                <DropdownItem
+                  key="impersonate"
+                  isDisabled={!user.access?.impersonate}
+                  onClick={() => toggleImpersonateDialog()}
+                >
+                  {t("impersonate")}
+                </DropdownItem>,
+                <DropdownItem
+                  key="delete"
+                  isDisabled={!user.access?.manage}
+                  onClick={() => toggleDeleteDialog()}
+                >
+                  {t("common:delete")}
+                </DropdownItem>,
+              ]
+            : undefined
+        }
         onToggle={(value) =>
           save({
             ...toUserFormFields(user, !!userProfileMetadata),

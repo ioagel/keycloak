@@ -40,7 +40,6 @@ type UserDataTableToolbarItemsProps = {
 };
 
 export function UserDataTableToolbarItems({
-  realm,
   hasSelectedRows,
   toggleDeleteDialog,
   toggleUnlockUsersDialog,
@@ -65,7 +64,7 @@ export function UserDataTableToolbarItems({
 
   const isRealmManager = hasAccess("manage-realm");
 
-  // Only needs query-users access to attempt add/delete of users.
+  // Only needs query-users access to attempt to add/delete of users.
   // This is because the user could have fine-grained access to users
   // of a group.  There is no way to know this without searching the
   // permissions of every group.
@@ -153,15 +152,10 @@ export function UserDataTableToolbarItems({
     );
   };
 
-  const bruteForceProtectionToolbarItem = !realm.bruteForceProtected ? (
+  const bruteForceProtectionToolbarItem = !isRealmManager ? (
     <ToolbarItem>
-      <Button
-        variant={ButtonVariant.link}
-        onClick={toggleDeleteDialog}
-        data-testid="delete-user-btn"
-        isDisabled={hasSelectedRows || !isRealmManager}
-      >
-        {t("deleteUser")}
+      <Button variant={ButtonVariant.link} onClick={toggleUnlockUsersDialog}>
+        {t("unlockAllUsers")}
       </Button>
     </ToolbarItem>
   ) : (
@@ -174,7 +168,7 @@ export function UserDataTableToolbarItems({
           <DropdownItem
             key="deleteUser"
             component="button"
-            isDisabled={hasSelectedRows || !isRealmManager}
+            isDisabled={hasSelectedRows}
             onClick={() => {
               toggleDeleteDialog();
               setKebabOpen(false);
