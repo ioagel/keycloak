@@ -51,12 +51,14 @@ type RealmTextProps = {
 };
 
 const RealmText = ({ value }: RealmTextProps) => {
-  const { realm } = useRealm();
-
+  // We have one realm in the Mtds app
+  // So we do not need checks for the CheckIcon
   return (
     <Split className="keycloak__realm_selector__list-item-split">
       <SplitItem isFilled>{value}</SplitItem>
-      <SplitItem>{value === realm && <CheckIcon />}</SplitItem>
+      <SplitItem>
+        <CheckIcon />
+      </SplitItem>
     </Split>
   );
 };
@@ -160,7 +162,9 @@ export const RealmSelector = () => {
           }}
           className="keycloak__realm_selector_dropdown__toggle"
         >
-          {realm}
+          {t("tzaneio.realm.name") !== "tzaneio.realm.name"
+            ? t("tzaneio.realm.name")
+            : realm}
         </DropdownToggle>
       }
       dropdownItems={(realms.length !== 0
@@ -172,7 +176,13 @@ export const RealmSelector = () => {
                   to={toDashboard({ realm: r.realm! })}
                   onClick={() => setOpen(false)}
                 >
-                  <RealmText value={r.realm!} />
+                  <RealmText
+                    value={
+                      t("tzaneio.realm.name") !== "tzaneio.realm.name"
+                        ? t("tzaneio.realm.name")
+                        : r.realm!
+                    }
+                  />
                 </Link>
               }
             />
