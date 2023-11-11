@@ -19,7 +19,6 @@ package org.keycloak.testsuite.federation.ldap;
 
 import org.jboss.logging.Logger;
 import org.junit.Assert;
-import org.junit.Assume;
 import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.FixMethodOrder;
@@ -95,6 +94,12 @@ public class LDAPGroupMapperSyncTest extends AbstractLDAPTest {
 
             LDAPUtils.addMember(ctx.getLdapProvider(), MembershipType.DN, LDAPConstants.MEMBER, "not-used", group1, group11);
             LDAPUtils.addMember(ctx.getLdapProvider(), MembershipType.DN, LDAPConstants.MEMBER, "not-used", group1, group12);
+
+            LDAPObject nonExistentChild = new LDAPObject();
+            LDAPDn nonExistentChildDn = group1.getDn().getParentDn();
+            nonExistentChildDn.addFirst(LDAPConstants.UID, "non-existent-child");
+            nonExistentChild.setDn(nonExistentChildDn);
+            LDAPUtils.addMember(ctx.getLdapProvider(), MembershipType.DN, LDAPConstants.MEMBER, "not-used", group1, nonExistentChild);
         });
     }
 
@@ -110,7 +115,8 @@ public class LDAPGroupMapperSyncTest extends AbstractLDAPTest {
         });
     }
 
-    private void testSyncNoPreserveGroupInheritance() throws Exception {
+    @Test
+    public void test01_syncNoPreserveGroupInheritance() throws Exception {
         testingClient.server().run(session -> {
             LDAPTestContext ctx = LDAPTestContext.init(session);
             RealmModel realm = ctx.getRealm();
@@ -189,36 +195,9 @@ public class LDAPGroupMapperSyncTest extends AbstractLDAPTest {
         });
     }
 
-    @Test
-    public void test01_syncNoPreserveGroupInheritance() throws Exception {
-        testSyncNoPreserveGroupInheritance();
-    }
 
     @Test
-    public void test02_syncNoPreserveGroupInheritanceWithOneGroupMissing() throws Exception {
-        Assume.assumeFalse("AD does not allow missing DN in group members",
-                LDAPConstants.VENDOR_ACTIVE_DIRECTORY.equals(ldapRule.getConfig().get(LDAPConstants.VENDOR)));
-
-        testingClient.server().run(session -> {
-            // create a non-existent group first in group1
-            LDAPTestContext ctx = LDAPTestContext.init(session);
-            RealmModel realm = ctx.getRealm();
-            ComponentModel mapperModel = LDAPTestUtils.getSubcomponentByName(realm, ctx.getLdapModel(), "groupsMapper");
-            LDAPStorageProvider ldapProvider = LDAPTestUtils.getLdapProvider(session, ctx.getLdapModel());
-            GroupLDAPStorageMapper groupMapper = LDAPTestUtils.getGroupMapper(mapperModel, ldapProvider, realm);
-            LDAPObject group1 = groupMapper.loadLDAPGroupByName("group1");
-            LDAPObject nonExistentChild = new LDAPObject();
-            LDAPDn nonExistentChildDn = group1.getDn().getParentDn();
-            nonExistentChildDn.addFirst(LDAPConstants.UID, "non-existent-child");
-            nonExistentChild.setDn(nonExistentChildDn);
-            LDAPUtils.addMember(ctx.getLdapProvider(), MembershipType.DN, LDAPConstants.MEMBER, "not-used", group1, nonExistentChild);
-        });
-
-        testSyncNoPreserveGroupInheritance();
-    }
-
-    @Test
-    public void test03_syncWithGroupInheritance() throws Exception {
+    public void test02_syncWithGroupInheritance() throws Exception {
         testingClient.server().run(session -> {
             LDAPTestContext ctx = LDAPTestContext.init(session);
             RealmModel realm = ctx.getRealm();
@@ -274,7 +253,7 @@ public class LDAPGroupMapperSyncTest extends AbstractLDAPTest {
 
 
     @Test
-    public void test04_syncWithDropNonExistingGroups() throws Exception {
+    public void test03_syncWithDropNonExistingGroups() throws Exception {
         testingClient.server().run(session -> {
             LDAPTestContext ctx = LDAPTestContext.init(session);
             RealmModel realm = ctx.getRealm();
@@ -330,7 +309,7 @@ public class LDAPGroupMapperSyncTest extends AbstractLDAPTest {
 
 
     @Test
-    public void test05_syncNoPreserveGroupInheritanceWithLazySync() throws Exception {
+    public void test04_syncNoPreserveGroupInheritanceWithLazySync() throws Exception {
         // Update group mapper to skip preserve inheritance
         testingClient.server().run(session -> {
             LDAPTestContext ctx = LDAPTestContext.init(session);
@@ -395,7 +374,7 @@ public class LDAPGroupMapperSyncTest extends AbstractLDAPTest {
 
 
     @Test
-    public void test06SyncRestAPI() {
+    public void test05SyncRestAPI() {
         ComponentRepresentation groupMapperRep = findMapperRepByName("groupsMapper");
 
         try {
@@ -410,7 +389,7 @@ public class LDAPGroupMapperSyncTest extends AbstractLDAPTest {
     // KEYCLOAK-8253 - Test if synchronization of large number of LDAP groups takes linear time
     @Ignore("This test is not suitable for regular CI testing due to higher time / performance demand")
     @Test
-    public void test07_ldapGroupsSyncHasLinearTimeComplexity() throws Exception {
+    public void test06_ldapGroupsSyncHasLinearTimeComplexity() throws Exception {
         // Count of LDAP groups to test the duration of the sync operation. Defaults to 30k unless overridden via system property
         final int GROUPS_COUNT = (System.getProperties().containsKey(TEST_LDAP_GROUPS_SYNC_LINEAR_TIME_GROUPS_COUNT)) ?
                 Integer.valueOf(System.getProperty(TEST_LDAP_GROUPS_SYNC_LINEAR_TIME_GROUPS_COUNT)) : 30000;

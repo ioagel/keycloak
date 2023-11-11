@@ -7,8 +7,6 @@
 :guide-priority: ${priority}
 :version: ${version}
 
-include::../attributes.adoc[]
-
 [[${id}]]
 = ${title}
 
